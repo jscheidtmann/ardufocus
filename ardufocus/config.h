@@ -138,7 +138,7 @@
 
 #ifdef MOTOR2_USE_A4988_DRIVER
   //                    MS1, MS2, MS3, SLEEP,  STEP, DIR
-  #define MOTOR2_PINOUT  13,  14,  15,    16,    17,  18
+  #define MOTOR2_PINOUT  18,  17,  16,    15,    14,  13
 #endif
 
 //#define MOTOR2_INVERT_DIRECTION
