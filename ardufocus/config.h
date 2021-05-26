@@ -21,20 +21,18 @@
 #define __CONFIG_H__
 
 // ----------------------------------------------------------------------------
-// SAFETY NOTICE --------------------------------------------------------------
+// FULL CONFIGURATION ---------------------------------------------------------
 // ----------------------------------------------------------------------------
 //
-//                   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//                   !! VERY IMPORTANT INFORMATION FOLLOWS !!
-//                   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// The following config.h shows a full configuration for ardufocus, for using
+// two motors, 3 buttons (FWD, BCK, Switch between motors), 
+// 3 LEDs (FWD, BCK, Motor), 1 NTC
 //
-// The wiring of the focuser has changed since commit [8375767], you should remove
-// any physical connections between the AREF and the 3.3V pin, not doing so may
-// damage your board. For more information read the README.md file or the source
-// code commit history.
-//
-// [8375767]: https://bit.ly/2HKUXgV
+// The number of pins that are usable is limited to at max 19 pins, according
+// to the hardware abstraction layer (hal.h).
 
+// 19 - 12 (2x A4988) = 7 - 2 (Serial) = 5!
+// TODO
 
 // ----------------------------------------------------------------------------
 // PERSISTENT MEMORY ----------------------------------------------------------
@@ -121,6 +119,32 @@
 // AF point.
 #define MOTOR1_SLEEP_TIMEOUT 15
 
+// ----------------------------------------------------------------------------
+// MOTOR #2 CONFIGURATION -----------------------------------------------------
+// ----------------------------------------------------------------------------
+// See above for explanations 
+
+//// Activate one of the following lines to activate a second motor
+#define MOTOR2_USE_A4988_DRIVER
+//#define MOTOR2_USE_DRV8825_DRIVER
+//#define MOTOR2_USE_ULN2003_DRIVER
+
+// Driver pin-out definition
+// Define bellow the pin-out for your specific driver.
+#ifdef MOTOR2_USE_ULN2003_DRIVER
+  //                    IN1, IN2, IN3, IN4
+  #define MOTOR2_PINOUT   2,   3,   4,   5
+#endif
+
+#ifdef MOTOR2_USE_A4988_DRIVER
+  //                    MS1, MS2, MS3, SLEEP,  STEP, DIR
+  #define MOTOR2_PINOUT  13,  14,  15,    16,    17,  18
+#endif
+
+//#define MOTOR2_INVERT_DIRECTION
+
+#define MOTOR2_SLEEP_WHEN_IDLE
+#define MOTOR2_SLEEP_TIMEOUT 15
 
 // ----------------------------------------------------------------------------
 // SPEED PROFILE --------------------------------------------------------------
@@ -136,8 +160,11 @@
 //  - Max speed: 1000
 //  - Min speed: 250
 //
-#define MOTOR1_MAX_SPEED 150
-#define MOTOR1_MIN_SPEED  25
+#define MOTOR1_MAX_SPEED 1000
+#define MOTOR1_MIN_SPEED  250
+
+#define MOTOR2_MAX_SPEED 1000
+#define MOTOR2_MIN_SPEED  250
 
 
 // ----------------------------------------------------------------------------
@@ -179,7 +206,12 @@
 // ----------------------------------------------------------------------------
 // TEMPERATURE SENSOR ---------------------------------------------------------
 // ----------------------------------------------------------------------------
-#define NTC_ADC_CHANNEL          0
+
+// Comment out the following line to disable the temperature sensor 
+// #define PROVIDE_NTC
+
+// PIN to use
+#define NTC_ADC_CHANNEL          4
 #define NTC_NOMINAL_TEMP      25.0F
 #define NTC_BCOEFFICIENT    3950.0F
 #define NTC_NOMINAL_VAL    10000.0F
@@ -206,33 +238,33 @@
 // motor on a dual motor configuration.
 //#define USE_UI_KAP
 
-// Use the following setings to select the input pins connected to each one of
-// the switches. The third button is optional.
-#define UI_KAP_FWD_BUTTON_PIN 16
-#define UI_KAP_BWD_BUTTON_PIN 17
-//#define UI_KAP_SWT_BUTTON_PIN 18
+// Use the following settings to select the input pins connected to each one of
+// the switches. The third button is optional (just comment it out).
+#define UI_KAP_FWD_BUTTON_PIN 9
+#define UI_KAP_BWD_BUTTON_PIN 16
+#define UI_KAP_SWT_BUTTON_PIN 5
 
 // We like the switches to be wired in an active-low configuration, this way you
 // don't need to use additional external resistors, we will automatically enable
-// the internal pull-ups for you. If you decide to use any other wiring logic use
-// the option bellow to reflect it.
+// the internal pull-ups for you. 
 //
 //           ---/.---
 //  GND --- | SWITCH | --- INPUT_PIN
 //           --------
 //
-//#define UI_KAP_INVERT_BUTTON_LOGIC
+// If you decide to use any other wiring logic comment out the following line
+#define UI_KAP_INVERT_BUTTON_LOGIC
 
 // The options bellow allows you to have one LED per button, the LED will light
 // up when the button is pressed. The third button (SWT) will be lit when the
 // first motor is active, and off when the second motor is active.
-//#define UI_KAP_FWD_BUTTON_LED_PIN 13
-//#define UI_KAP_BWD_BUTTON_LED_PIN 13
-//#define UI_KAP_SWT_BUTTON_LED_PIN 13
+#define UI_KAP_FWD_BUTTON_LED_PIN 4
+#define UI_KAP_BWD_BUTTON_LED_PIN 3
+#define UI_KAP_SWT_BUTTON_LED_PIN 2
 
 // Pin A0 is channel 0 (..) pin A3 is channel 3
 // DO NOT USE CHANNEL 0, valid options are 1, 2 and 3
-#define UI_KAP_ADC_CHANNEL 1
+#define UI_KAP_ADC_CHANNEL 5
 
 
 // ----------------------------------------------------------------------------
