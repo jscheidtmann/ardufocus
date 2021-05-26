@@ -96,6 +96,8 @@ void a4988::set_half_step()
   util::delay_2us();
 }
 
+// Disable 'implicit fall-through' warning, as the switch statements fall-through on purpose.
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough="
 
 /**
  * @brief [brief description]
@@ -141,6 +143,8 @@ bool a4988::step_ccw()
       return step();
   }
 }
+// Restore warnings to command line parameters.
+#pragma GCC diagnostic pop
 
 
 /**
