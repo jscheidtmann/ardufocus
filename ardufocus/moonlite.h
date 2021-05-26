@@ -62,12 +62,15 @@ class moonlite: protected protocol, protected serial {
 
     void parse(char* const str) {
       size_t offset = 0;
-      motor_t motor = MOTOR_ONE;
+      static motor_t motor = MOTOR_ONE;
       char buffer[CMD_MAX_LEN] = {0};
 
       if(str[0] == '2') {
         offset = 1;
         motor = MOTOR_TWO;
+      } else if (str[0] == '1') {
+        offset = 1;
+        motor = MOTOR_ONE;
       }
 
       switch (str[0 + offset]) {
