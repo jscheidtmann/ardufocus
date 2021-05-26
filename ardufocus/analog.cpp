@@ -71,7 +71,7 @@ ISR(ADC_vect)
  */
 void Analog::read_async(const uint8_t& channel)
 {
-  if(channel > 3) { return; }
+  if(channel > 7) { return; }
   if(Analog::s_buffer.chan != 255) { return; }
 
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {

@@ -47,12 +47,12 @@ class Analog
       uint16_t raw[128];
     } s_buffer;
 
-    static uint16_t s_cache[4];
+    static uint16_t s_cache[8];
 
   public:
     static void setup();
     static void read_async(const uint8_t& channel);
-    static uint16_t read(const uint8_t& channel) { return ((channel > 3) ? 0 : s_cache[channel]); }
+    static uint16_t read(const uint8_t& channel) { return ((channel > 8) ? 0 : s_cache[channel]); }
 };
 
 #endif
