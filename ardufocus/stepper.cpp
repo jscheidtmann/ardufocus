@@ -176,9 +176,11 @@ void stepper::set_target_position(const uint32_t& target) {
 
 
 /**
- * @brief [brief description]
- * @details [long description]
- *
+ * @brief Method called from ISR to change the motor state(s)
+ * @details 
+ * Calls virtual methods for doing the actual work (see respective child classes for details)
+ * If appropriate send stepper motor drivers into sleep mode.
+ * If appropriate issue a clock-wise or counter-clock-wise step and update the focusers position.
  */
 void stepper::tick()
 {
@@ -212,8 +214,12 @@ void stepper::tick()
 
 #ifdef HAS_ACCELERATION
   /**
-   * @brief [brief description]
-   * @details [long description]
+   * @brief Determine new speed
+   * @details 
+   * Depending on acceleration profile and current position, determine the new speed.
+   * Updates member m_set_speed. Accounts for minimum speed configured in config.h
+   * 
+   * Note: if no accelleration profile is used the default implementation from stepper.h is used.
    *
    */
   void stepper::update_freq()

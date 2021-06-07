@@ -20,9 +20,14 @@
 #include "isr.h"
 
 /**
- * @brief Timer0 interrupt handler
- * @details
- *
+ * @brief Timer0 interrupt handler - Movements of Focuser
+ * @details  
+ * This routine is called when Timer0 reaches the defined threshould. 
+ * (Search TIMER0 in assert.h for the logic)
+ * Motor driver method tick() is called on each configured motor. 
+ * The current position is saved in eeprom. 
+ * 
+ * You can define DEBUG_ISR, which will then blink some LEDs, once this routine is reached.
  */
 ISR(TIMER0_COMPA_vect)
 {
