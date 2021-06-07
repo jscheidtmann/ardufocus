@@ -22,7 +22,7 @@
 /**
  * @brief Static class member initialization
  */
-uint16_t Analog::s_cache[4] = { 0, 0, 0, 0 };
+uint16_t Analog::s_cache[8] = { 0, 0, 0, 0,  0, 0, 0, 0 };
 Analog::buffer_t Analog::s_buffer = { 0, 255, {} };
 
 /**
