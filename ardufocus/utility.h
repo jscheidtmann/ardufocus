@@ -90,16 +90,6 @@ namespace util
     );
   }
 
-  __attribute__((always_inline)) inline void delay_250us()
-  {
-    // Delay 4 cycles: 250 ns at 16 MHz
-    asm volatile (
-      "    rjmp 1f" "\n"
-      "1:  rjmp 2f" "\n"
-      "2:"          "\n"
-    );
-  }
-
   __attribute__((always_inline)) inline void delay_1ms()
   {
     // Delay 16 000 cycles: 1ms at 16.0 MHz
