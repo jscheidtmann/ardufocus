@@ -166,6 +166,12 @@
 #define MOTOR2_MAX_SPEED 250
 #define MOTOR2_MIN_SPEED  25
 
+// Define steps size per motor (microstepping)
+// Allowed values are 1 = full stepping, 2 = half step, 4 = quarter step
+// (some drivers allow even smaller steps, see api.h for implementation)
+#define MOTOR1_MICROSTEPPING 4
+#define MOTOR2_MICROSTEPPING 4
+
 
 // ----------------------------------------------------------------------------
 // ACCELERATION PROFILE -------------------------------------------------------

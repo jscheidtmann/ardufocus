@@ -99,6 +99,22 @@ void a4988::set_half_step()
   util::delay_2us();
 }
 
+/**
+ * @brief Set microstepping resolution: half step
+ * @details Use the microstepping resolutions pins to configure a "half step" per pulse resolution.
+ *
+ */
+void a4988::set_quarter_step()
+{
+  m_mode = 0xFF;
+  IO::write(m_pinout.ms1, LOW);
+  IO::write(m_pinout.ms2, HIGH);
+  IO::write(m_pinout.ms3, LOW);
+
+  // A4988: 400ns, A8825: 1.3us
+  util::delay_2us();
+}
+
 // Disable 'implicit fall-through' warning, as the switch statements fall-through on purpose.
 #pragma GCC diagnostic ignored "-Wimplicit-fallthrough="
 

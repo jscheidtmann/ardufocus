@@ -211,13 +211,26 @@ class api {
       switch(idx) {
         case MOTOR_ONE:
           #ifdef MOTOR1_HAS_DRIVER
-          g_motor1->set_half_step();
+          // Relying on compiler to remove the dead ends.
+          if (MOTOR1_MICROSTEPPING == 4) {
+            g_motor1->set_quarter_step();
+          } else if (MOTOR1_MICROSTEPPING == 2) {
+            g_motor1->set_half_step();
+          } else {
+            g_motor1->set_full_step();
+          }
           #endif
           break;
 
         case MOTOR_TWO:
           #ifdef MOTOR2_HAS_DRIVER
-          g_motor2->set_half_step();
+          if (MOTOR2_MICROSTEPPING == 4) {
+            g_motor2->set_quarter_step();
+          } else if (MOTOR2_MICROSTEPPING == 2) {
+            g_motor2->set_half_step();
+          } else {
+            g_motor2->set_full_step();
+          }
           #endif
           break;
 
