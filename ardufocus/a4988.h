@@ -50,6 +50,14 @@ class a4988: public stepper
      *  DIR |o      ---  o| GND
      *       `-----------´
      *
+     * Pin description according to A4988 data sheet, e.g. https://pdf1.alldatasheet.com/datasheet-pdf/view/338780/ALLEGRO/A4988.html
+     * 
+     * ENA: Enable (negated logic)
+     * RST: Reset (negated logic)
+     * SLP: Sleep (negated logic)
+     * MS1,MS2,MS3: Microstepping resolution, LLL = full step, HLL = half step, LHL = quarter, HHL = eighth, HHH = 1/16th step.
+     * DIR: Direction
+     * STP: Step
      */
 
   protected:

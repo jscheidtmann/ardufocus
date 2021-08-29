@@ -20,8 +20,9 @@
 #include "a4988.h"
 
 /**
- * @brief [brief description]
- * @details [long description]
+ * @brief Initialize Arduino pins for A4988 step stick according to pinout in config.h
+ * @details Configure Arduino pins, so we are able to drive the stepper motor. 
+ * This routine sets the step resolution.  
  *
  */
 void a4988::init()
@@ -35,9 +36,11 @@ void a4988::init()
   IO::set_as_output(m_pinout.sleep);
   IO::set_as_output(m_pinout.direction);
 
+  // Step resolution: Full step
   IO::write(m_pinout.ms1,        LOW);
   IO::write(m_pinout.ms2,        LOW);
   IO::write(m_pinout.ms3,        LOW);
+
   IO::write(m_pinout.step,       LOW);
   IO::write(m_pinout.direction,  LOW);
 
@@ -64,8 +67,8 @@ void a4988::halt()
 
 
 /**
- * @brief [brief description]
- * @details [long description]
+ * @brief Set microstepping resolution: Full step
+ * @details Use the microstepping resolution pins to configure a "full step" per pulse.
  *
  */
 void a4988::set_full_step()
@@ -81,8 +84,8 @@ void a4988::set_full_step()
 
 
 /**
- * @brief [brief description]
- * @details [long description]
+ * @brief Set microstepping resolution: half step
+ * @details Use the microstepping resolutions pins to configure a "half step" per pulse resolution.
  *
  */
 void a4988::set_half_step()
@@ -148,8 +151,8 @@ bool a4988::step_ccw()
 
 
 /**
- * @brief [brief description]
- * @details [long description]
+ * @brief Move the stepper motor one step.
+ * @details Writes a pulse on the output pin, to advance the motor according to the set resolution.
  *
  */
 bool a4988::step()

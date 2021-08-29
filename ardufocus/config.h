@@ -25,7 +25,7 @@
 // ----------------------------------------------------------------------------
 //
 // The following config.h shows a full configuration for ardufocus, for using
-// two motors, 3 buttons (FWD, BCK, Switch between motors), 
+// two motors, 6 buttons (FWD, BCK, Fast, FWD, Fast BCK, Switch between motors), 
 // 3 LEDs (FWD, BCK, Motor), 1 NTC
 //
 // The number of pins that are usable is limited to at max 19 pins, according
@@ -160,11 +160,11 @@
 //  - Max speed: 1000
 //  - Min speed: 250
 //
-#define MOTOR1_MAX_SPEED 1000
-#define MOTOR1_MIN_SPEED  250
+#define MOTOR1_MAX_SPEED 250
+#define MOTOR1_MIN_SPEED  25
 
-#define MOTOR2_MAX_SPEED 1000
-#define MOTOR2_MIN_SPEED  250
+#define MOTOR2_MAX_SPEED 250
+#define MOTOR2_MIN_SPEED  25
 
 
 // ----------------------------------------------------------------------------
