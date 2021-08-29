@@ -167,6 +167,10 @@ class moonlite: protected protocol, protected serial {
               motor_set_mode_half(motor);
               break;
 
+            case 'Q':
+              motor_set_mode_quarter(motor);
+              break;
+
             case 'N':
               #ifdef HIGH_RESOLUTION_MODE
               motor_set_target(motor, util::hex2ul(buffer));

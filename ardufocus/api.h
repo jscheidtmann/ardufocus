@@ -258,6 +258,23 @@ class api {
       }
     }
 
+    static void motor_set_mode_quarter(const motor_t& idx) {
+      switch(idx) {
+        case MOTOR_ONE:
+          #ifdef MOTOR1_HAS_DRIVER
+          g_motor1->set_quarter_step();
+          #endif
+          break;
+        case MOTOR_TWO:
+          #ifdef MOTOR2_HAS_DRIVER
+          g_motor2->set_quarter_step();
+          #endif
+          break;
+        default:
+          return;
+      }
+    }
+
     static void motor_set_target(const motor_t& idx, const uint32_t& value) {
       switch(idx) {
         case MOTOR_ONE:
