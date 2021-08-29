@@ -160,11 +160,11 @@
 //  - Max speed: 1000
 //  - Min speed: 250
 //
-#define MOTOR1_MAX_SPEED 250
-#define MOTOR1_MIN_SPEED  25
+#define MOTOR1_MAX_SPEED 500
+#define MOTOR1_MIN_SPEED 100
 
-#define MOTOR2_MAX_SPEED 250
-#define MOTOR2_MIN_SPEED  25
+#define MOTOR2_MAX_SPEED 500
+#define MOTOR2_MIN_SPEED 100
 
 // Define steps size per motor (microstepping)
 // Allowed values are 1 = full stepping, 2 = half step, 4 = quarter step
