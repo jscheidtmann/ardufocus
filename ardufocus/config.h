@@ -239,13 +239,20 @@
 // USER INTERFACE -------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
+////////////////////
+//   B A S I C   ///
+////////////////////
+
 // This is the most basic user interface, it uses two keys to move the focuser
 // IN (FWD) and out (BWD). A third key (SWT) can be used to select the active
 // motor on a dual motor configuration.
 //#define USE_UI_KAP
 
+#ifdef USE_UI_KAP
 // Use the following settings to select the input pins connected to each one of
 // the switches. The third button is optional (just comment it out).
+//
+// You need to add a switch to each of these pins, see comment below on active low
 #define UI_KAP_FWD_BUTTON_PIN 9
 #define UI_KAP_BWD_BUTTON_PIN 16
 #define UI_KAP_SWT_BUTTON_PIN 5
@@ -261,16 +268,41 @@
 // If you decide to use any other wiring logic comment out the following line
 #define UI_KAP_INVERT_BUTTON_LOGIC
 
-// The options bellow allows you to have one LED per button, the LED will light
-// up when the button is pressed. The third button (SWT) will be lit when the
-// first motor is active, and off when the second motor is active.
-#define UI_KAP_FWD_BUTTON_LED_PIN 4
-#define UI_KAP_BWD_BUTTON_LED_PIN 3
-#define UI_KAP_SWT_BUTTON_LED_PIN 2
+#endif 
+
+//////////////////////////
+//   A D V A N C E D   ///
+//////////////////////////
+
+// The advanced UI capability uses a resistor network to provide 5 buttons + shift. 
+// See ui_reskeybd.h for an example resistor network, that can be used.
+#define USE_UI_KAP_ADV
+
+#ifdef USE_UI_KAP_ADV
 
 // Pin A0 is channel 0 (..) pin A3 is channel 3
-// DO NOT USE CHANNEL 0, valid options are 1, 2 and 3
+// DO NOT USE CHANNEL 0, valid options are 1-5
 #define UI_KAP_ADC_CHANNEL 5
+
+#endif 
+
+///////////////////////////////////
+////   U I   F e e d b a c k   ////
+///////////////////////////////////
+
+// The options below allows you to have one LED per button, the LED will light
+// up when the button is pressed. The third button (SWT) will be lit when the
+// first motor is active, and off when the second motor is active.
+//
+// Note: These MUST be defined when using one of the UI capabilities.
+
+#if defined(USE_UI_KAP) || defined(USE_UI_KAP_ADV) 
+
+#define UI_KAP_FWD_BUTTON_LED_PIN 4
+#define UI_KAP_BWD_BUTTON_LED_PIN 3
+#define UI_KAP_MOTOR_BUTTON_LED_PIN 2
+
+#endif
 
 
 // ----------------------------------------------------------------------------

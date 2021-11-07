@@ -55,9 +55,9 @@ void Keybd::setup()
     IO::write(UI_KAP_BWD_BUTTON_LED_PIN, LOW);
   #endif
 
-  #ifdef UI_KAP_SWT_BUTTON_LED_PIN
-    IO::set_as_output(UI_KAP_SWT_BUTTON_LED_PIN);
-    IO::write(UI_KAP_SWT_BUTTON_LED_PIN, LOW);
+  #ifdef UI_KAP_MOTOR_BUTTON_LED_PIN
+    IO::set_as_output(UI_KAP_MOTOR_BUTTON_LED_PIN);
+    IO::write(UI_KAP_MOTOR_BUTTON_LED_PIN, LOW);
   #endif
 }
 
@@ -130,8 +130,8 @@ void Keybd::tick()
       bool button_swt_trigger = false;
       debounce(button_swt_state, previous_state[2], button_swt_trigger, counter[2], UI_KAP_BUTTON_DEBOUNCE);
 
-      #ifdef UI_KAP_SWT_BUTTON_LED_PIN
-      IO::write(UI_KAP_SWT_BUTTON_LED_PIN, (motor == MOTOR_ONE) ? HIGH : LOW);
+      #ifdef UI_KAP_MOTOR_BUTTON_LED_PIN
+      IO::write(UI_KAP_MOTOR_BUTTON_LED_PIN, (motor == MOTOR_ONE) ? HIGH : LOW);
       #endif
 
       if(button_swt_state && button_swt_trigger) {
