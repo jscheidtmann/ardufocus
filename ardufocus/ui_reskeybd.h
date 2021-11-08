@@ -27,7 +27,7 @@
 #include "io.h"
 
 /**
- * @brief Class for managing a keyboard implemented using a resistance network
+ * @brief Class  "ResistornetKeyBoard" for managing a keyboard implemented using a resistance network
  * 
  * This class implements a keyboard consisting of a network of resistances. 
  * It is connected to one of the analog-in ports of the arduino (Ax, x=0..7).

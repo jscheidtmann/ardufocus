@@ -44,6 +44,9 @@ const unsigned int ResKeybd::button_values[] = {
       250, 310, SLOW_BWD,    // Bs+B5
     };
 
+motor_t ResKeybd::motor = MOTOR_ONE;
+bool ResKeybd::inited = false;
+
 
 void ResKeybd::setup()
 {

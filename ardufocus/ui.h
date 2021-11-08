@@ -26,12 +26,20 @@
   #include "ui_keybd.h"
 #endif
 
+#ifdef USE_UI_KAP_ADV
+  #include "ui_reskeybd.h"
+#endif
+
 namespace UI
 {
   inline void setup()
   {
     #ifdef USE_UI_KAP
       Keybd::setup();
+    #endif
+
+    #ifdef USE_UI_KAP_ADV
+      ResKeybd::setup();
     #endif
   }
 
@@ -44,6 +52,10 @@ namespace UI
   {
     #ifdef USE_UI_KAP
       Keybd::tick();
+    #endif
+
+    #ifdef USE_UI_KAP_ADV
+      ResKeybd::tick();
     #endif
   }
 }
