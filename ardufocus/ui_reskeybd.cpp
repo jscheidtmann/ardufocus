@@ -21,10 +21,16 @@
 
 #ifdef USE_UI_KAP_ADV
 
+// // Needed for debugging
+// #include <stdio.h>
+// #include <string.h>
+// // End needed for debugging
+
 #include "config.h"
 #include "analog.h"
 #include "api.h"
 #include "io.h"
+#include "moonlite.h"
 
 const unsigned int ResKeybd::button_values[] = {
 // Measured values: 
@@ -32,16 +38,16 @@ const unsigned int ResKeybd::button_values[] = {
 // 837, 450, 366, 62, 277   // B1-B5, with shift pressed
 
       // Start of interval, End of interval, Action, <repeat>
-      930, 990, NOTHING,      // B1
-      810, 870, MOTOR_SWITCH, // Bs+B1
-      700, 760, FAST_FWD,   // B2
-      420, 470, ULTRA_FWD,    // Bs+B2
-      150, 210, FAST_BWD,   // B4
-       30,  90, ULTRA_BWD,    // Bs+B4
-      620, 680, SLOWEST_FWD,     // B3
-      330, 390, SLOW_FWD,    // Bs+B3
-      520, 580, SLOWEST_BWD,     // B5
-      250, 310, SLOW_BWD,    // Bs+B5
+      900, 990, NOTHING,      // B1
+      800, 899, MOTOR_SWITCH, // Bs+B1
+      690, 799, FAST_FWD,     // B2
+      400, 500, ULTRA_FWD,    // Bs+B2
+      111, 210, FAST_BWD,     // B4
+       30, 110, ULTRA_BWD,    // Bs+B4
+      600, 689, SLOWEST_FWD,  // B3
+      330, 399, SLOW_FWD,     // Bs+B3
+      501, 600, SLOWEST_BWD,  // B5
+      211, 350, SLOW_BWD,     // Bs+B5
     };
 
 motor_t ResKeybd::motor = MOTOR_ONE;
@@ -83,19 +89,26 @@ void ResKeybd::tick()
 {
     setup();
 
-    // Read current state from feedback LEDs
-    bool fwd_previous = (bool)(IO::read(UI_KAP_FWD_BUTTON_LED_PIN) == LOW); 
-    bool bwd_previous = (bool)(IO::read(UI_KAP_BWD_BUTTON_LED_PIN) == LOW); 
- 
-    bool fwd_state = fwd_previous;
-    bool bwd_state = bwd_previous;
+    // Routine uses *_state variables for current state of switches, that then undergo a debouncing.
+    // *_trigger then signal, that a change happened (once and only once after debouncing).  
 
+    // Init to "off"
+    bool fwd_state = false;
+    bool bwd_state = false;
     bool switch_state = false;
 
     uint32_t new_motor_speed = 0;
 
     // Check if a button in the resistance network is pressed 
     uint16_t value = Analog::read(UI_KAP_ADC_CHANNEL);
+
+    // // DEBUG See which values are returned
+    // if (value > 10) {
+    //     char buffer[30] = {0};
+    //     sprintf_P(buffer, PSTR("%d"), value);
+    //     comms.reply(buffer);
+    // }
+
     enum action act = decode(value);
     switch (act) {
         case NOTHING:
@@ -143,7 +156,7 @@ void ResKeybd::tick()
             break;
     }
 
-    // Debounce routine
+    // Debounce routine, resets *_state back to false, if not pressed down long enough
     static uint8_t counter[3] = { 0 };
     static bool previous_state[3] = { false };
 
@@ -154,67 +167,70 @@ void ResKeybd::tick()
     debounce(bwd_state, previous_state[1], bwd_trigger, counter[1], UI_KAP_BUTTON_DEBOUNCE);
 
     bool switch_trigger = false;
-    debounce(switch_state, previous_state[2], bwd_trigger, counter[2], UI_KAP_BUTTON_DEBOUNCE);
+    debounce(switch_state, previous_state[2], switch_trigger, counter[2], UI_KAP_BUTTON_DEBOUNCE);
 
-
-    static uint32_t old_motor_speed = 0;
-
-    // Check that we not moving in both directions at the same time.
-    if (!fwd_trigger || !bwd_trigger) { 
-
-        // Start Moving
-        if ((fwd_trigger && ! fwd_state) || (bwd_trigger && !bwd_state)) {
-            // Save old motor speed   
-            old_motor_speed = api::motor_get_speed(motor);
-            fwd_state = fwd_trigger;
-            bwd_state = bwd_trigger;
-
-            // Motor speed might have changed.
-            if (new_motor_speed > 0) {
-                api::motor_set_speed(motor, new_motor_speed);
-            }
-
-            // Start moving out or in.
-            if(! api::motor_is_moving(motor)) {
-                api::motor_set_target(motor, (fwd_state) ? -1 : 0); // All out or all in (unsigned)
-                api::motor_start(motor);
-            }
-        } else if(!fwd_trigger && !bwd_trigger) {
-            api::motor_stop(motor);
-            api::motor_set_speed(motor, old_motor_speed);
-        } // else move further
-
-    } 
-
-    // Visual feedback when the forward button is pressed
+    // Visual feedback when one of the forward buttons is pressed
     #ifdef UI_KAP_FWD_BUTTON_LED_PIN
     IO::write(UI_KAP_FWD_BUTTON_LED_PIN, (fwd_state) ? HIGH : LOW);
     #endif
 
-    // Visual feedback when the backward button is pressed
+    // Visual feedback when one of the backward buttons is pressed
     #ifdef UI_KAP_BWD_BUTTON_LED_PIN
     IO::write(UI_KAP_BWD_BUTTON_LED_PIN, (bwd_state) ? HIGH : LOW);
     #endif
 
-    // Visual feedback, which motor is selected.
-    #ifdef UI_KAP_MOTOR_BUTTON_LED_PIN
-    IO::write(UI_KAP_MOTOR_BUTTON_LED_PIN, (motor == MOTOR_ONE) ? HIGH : LOW);
-    #endif
+    // // Visual feedback when the Motor button is pressed.
+    // #ifdef UI_KAP_MOTOR_BUTTON_LED_PIN
+    // IO::write(UI_KAP_MOTOR_BUTTON_LED_PIN, (switch_state) ? HIGH : LOW);
+    // #endif
 
-    if(switch_state && switch_trigger) {
-        if(act == MOTOR_SWITCH) {
-            if(! api::motor_is_moving(motor)) {
-                switch(motor) {
+    static uint32_t old_motor_speed = 0;
+
+    if(fwd_state || bwd_state) {
+        if(fwd_trigger || bwd_trigger) {
+            old_motor_speed = api::motor_get_speed(motor);
+        }
+
+        // It's important that the "new_motor_speed" value not to
+        // be lower than 2, because at the stepper tick routine it
+        // will be divivded by two.
+        // api::motor_set_speed(motor, new_motor_speed);
+        api::motor_set_speed(motor, map(new_motor_speed, MOTOR1_MIN_SPEED, MOTOR1_MAX_SPEED, 2, 64));
+
+
+        if(! api::motor_is_moving(motor)) {
+            api::motor_set_target(motor, (fwd_state) ? -1 : 0); // Max of movement range (overflows as unsigned), Start of movement range. 
+            api::motor_start(motor);
+            // comms.reply("s");
+        }
+    } else {
+        // Buttons not pressed
+        if(fwd_trigger || bwd_trigger) {
+            api::motor_stop(motor);
+            api::motor_set_speed(motor, old_motor_speed);
+            // comms.reply("x");
+        }
+
+        #ifdef MOTOR2_HAS_DRIVER
+
+        #ifdef UI_KAP_MOTOR_BUTTON_LED_PIN
+        IO::write(UI_KAP_MOTOR_BUTTON_LED_PIN, (motor == MOTOR_ONE) ? HIGH : LOW);
+        #endif
+
+        if(switch_state && switch_trigger && ! api::motor_is_moving(motor)) {
+            switch(motor) {
                 case MOTOR_ONE:
-                    motor = MOTOR_TWO;
-                    break;
+                comms.reply("1");
+                motor = MOTOR_TWO;
+                break;
 
                 case MOTOR_TWO:
-                    motor = MOTOR_ONE;
-                    break;
-                }
+                comms.reply("2");
+                motor = MOTOR_ONE;
+                break;
             }
         }
+        #endif // MOTOR2_HAS_DRIVER
     }
 }
 

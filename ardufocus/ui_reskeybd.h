@@ -156,8 +156,11 @@ class ResKeybd
 
     /**
      * @brief Helper method for debouncing button presses.
+     * 
+     * @param current_state, status of "button" as read from ADC. 
+     * @param previous_state, status of "button" as previously defined.
      */
-    static void debounce(bool&, bool&, bool&, uint8_t&, const uint8_t& );
+    static void debounce(bool& current_state, bool& previous_state, bool& trigger_event, uint8_t& counter, const uint8_t& threshold);
 
     /**
      * @brief Helper method for determining which action to take.
