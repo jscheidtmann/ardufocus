@@ -3,3 +3,4 @@
 ardufocus/localcfg.h
 .pio/build
 .vscode
+workspace.code-workspace
