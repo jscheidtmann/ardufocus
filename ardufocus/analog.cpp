@@ -84,7 +84,10 @@ void Analog::read_async(const uint8_t& channel)
     Analog::s_buffer.chan = channel;
 
     // select the internal 1.1V aref and the target analog channel
-    ADMUX = bit (REFS1) | bit (REFS0) | (channel & 0x07);
+    // ADMUX = bit (REFS1) | bit (REFS0) | (channel & 0x07);
+
+    // select the internal VCC aref and the target analog channel
+    ADMUX = bit (REFS0) | (channel & 0x07);
 
     // start the async analog read
     ADCSRA |= bit(ADSC) | bit(ADIE);
