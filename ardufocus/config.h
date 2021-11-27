@@ -247,7 +247,7 @@
 //#define UI_KAP_SWT_BUTTON_LED_PIN 13
 
 // Pin A0 is channel 0 (..) pin A3 is channel 3
-// DO NOT USE CHANNEL 0, valid options are 1, 2 and 3
+// DO NOT USE CHANNEL 0 (which is the NTC, see above), valid options are 1, 2 and 3
 #define UI_KAP_ADC_CHANNEL 1
 
 
