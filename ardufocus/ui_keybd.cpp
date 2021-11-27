@@ -69,7 +69,7 @@ void Keybd::tick()
   bool button_fwd_state = (bool)(IO::read(UI_KAP_FWD_BUTTON_PIN) == LOW); // fwd
   bool button_bwd_state = (bool)(IO::read(UI_KAP_BWD_BUTTON_PIN) == LOW); // back
   #ifdef UI_KAP_2SPEEDS
-  bool button_speed_state = (bool)(IO::read(UI_KAP_HIGHSPEED_BUTTON_PIN) == LOW); // highspeed
+  bool button_highspeed_state = (bool)(IO::read(UI_KAP_HIGHSPEED_BUTTON_PIN) == LOW); // highspeed
   #endif
 
   #ifdef UI_KAP_INVERT_BUTTON_LOGIC
@@ -116,7 +116,7 @@ void Keybd::tick()
     #ifndef UI_KAP_2SPEEDS
     uint8_t new_motor_speed = map(Analog::read(UI_KAP_ADC_CHANNEL), 0, 1023, 2, 64);
     #else
-    uint8_t new_motor_speed = button_speed_state ? 2 : UI_KAP_SPEED_DIVIDER;
+    uint8_t new_motor_speed = button_highspeed_state ? 2 : UI_KAP_SPEED_DIVIDER;
     #endif
     api::motor_set_speed(motor, new_motor_speed);
 
