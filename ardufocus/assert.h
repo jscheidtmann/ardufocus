@@ -242,7 +242,7 @@
   #endif
 
   #if defined(UI_KAP_2SPEEDS) 
-    #if UI_KAP_SPEED_DIVIDER < 2 || UI_KAP_SPEED_DIVICER > 64
+    #if UI_KAP_SPEED_DIVIDER < 2 || UI_KAP_SPEED_DIVIDER > 64
       #error UI_KAP_SPEED_DIVIDER must be between 2 and 64, but is not. Check config.h
     #endif 
 
