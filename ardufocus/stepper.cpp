@@ -206,6 +206,7 @@ void stepper::set_target_position(const uint32_t& target) {
  * The frequency is determined by 
  *  - m_set_speed, which is calculated from the chosen velocity profile (see config.h, in set_target_position())
  *  - m_speed, the speed that is set from the moonlite controller (on computer) or any keyboard/ui that is configured.
+ *      This acts as a divider on the *_MAX_SPEED set in config.h, the larger the slower it is.
  * 
  * Two cascading counters are used, to determine the frequency with which steps are issued:
  *  - m_ovf_counter, this needs to overflow TIMER0_FREQ/(2*m_set_speed)
