@@ -110,7 +110,7 @@ ISR(TIMER2_COMPA_vect)
       Analog::read_async(NTC_ADC_CHANNEL);
       break;
 
-    #ifdef USE_UI_KAP
+    #ifndef UI_KAP_2SPEEDS
     case UI_KAP_ADC_CHANNEL + 30:
       Analog::read_async(UI_KAP_ADC_CHANNEL);
       break;

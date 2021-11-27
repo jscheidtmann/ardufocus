@@ -220,7 +220,7 @@
 #define USE_UI_KAP
 
 // Use the following setings to select the input pins connected to each one of
-// the switches. The third button is optional.
+// the switches. The third button is optional (and only needed for two motors)
 // 16 = A2 on Arduino Nano
 // 17 = A3 on Arduino Nano
 #define UI_KAP_FWD_BUTTON_PIN 16
@@ -246,9 +246,46 @@
 #define UI_KAP_BWD_BUTTON_LED_PIN 4
 //#define UI_KAP_SWT_BUTTON_LED_PIN 13
 
+// Defining this will lead to having two speeds when manually focusing
+// If you want to attach a potentiometer, comment out the follow line and see below
+#define UI_KAP_2SPEEDS
+
+#ifdef UI_KAP_2SPEEDS
+// Pressing this button will enable a high speed move when pressing one of the 
+// previous buttons. The speed will be MAX_SPEED as defined above
+#define UI_KAP_HIGHSPEED_BUTTON_PIN  13
+
+// Normally, when the high speed button is not pressed, this divider is applied 
+// to the MAX_SPEED. Useful values are 2 to 64. Do NOT use less than two (it's divided by 2)!
+#define UI_KAP_SPEED_DIVIDER 16
+
+#else
+
+// The velocity when pressing the button is determined by reading out the value of the 
+// following ADC Channel. A value of zero (0) means full speed, a value of 1023 means 
+// 1/64th of this (linearly interpolated). 
+// 
+// You can add a potentiometer like this:             Or a button similar like this (for 2 speeds only)
+//   5V ---                                               5V   ---
+//        |                                                      |
+//       | |                                                    | | R1 = for limiting current
+//       | /--- UI_KAP_ADC_CHANNEL                               |
+//       |/|                                                     *---- UI_KAP_ADC_CHANNEL
+//     --/ |                                                     |
+//       | |                                                      /
+//        |                                                      |
+//  GND ---                                               GND  ---
+// 
+//
 // Pin A0 is channel 0 (..) pin A3 is channel 3
 // DO NOT USE CHANNEL 0 (which is the NTC, see above), valid options are 1, 2 and 3
 #define UI_KAP_ADC_CHANNEL 1
+
+#endif
+
+
+// Invert the logic, that is used in the ADC channel. 
+#define UI_KAP_INVERT_ADC 
 
 
 // ----------------------------------------------------------------------------

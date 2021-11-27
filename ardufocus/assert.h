@@ -240,6 +240,17 @@
     #error KAP configuration is not valid.
     #error Please define UI_KAP_FWD_BUTTON_PIN and UI_KAP_BWD_BUTTON_PIN
   #endif
+
+  #if defined(UI_KAP_2SPEEDS) 
+    #if UI_KAP_SPEED_DIVIDER < 2 || UI_KAP_SPEED_DIVICER > 64
+      #error UI_KAP_SPEED_DIVIDER must be between 2 and 64, but is not. Check config.h
+    #endif 
+
+    #ifndef UI_KAP_HIGHSPEED_BUTTON_PIN
+      #error KAP configuration is not valid.abort
+      #error Please define UI_KAP_HIGHSPEED_BUTTON_PIN 
+    #endif
+  #endif
 #endif
 
 #endif
