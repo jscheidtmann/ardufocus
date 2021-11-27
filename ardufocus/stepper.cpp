@@ -20,8 +20,9 @@
 #include "stepper.h"
 
 /**
- * @brief [brief description]
- * @details [long description]
+ * @brief Initialize the Stepper class
+ * @details 
+ * Initialize velocity
  *
  */
 void stepper::init()
@@ -34,8 +35,9 @@ void stepper::init()
 
 
 /**
- * @brief [brief description]
- * @details [long description]
+ * @brief Start moving
+ * @details 
+ * Sets moving to true, so the motor starts moving. 
  *
  */
 void stepper::move()
@@ -46,8 +48,7 @@ void stepper::move()
 
 
 /**
- * @brief [brief description]
- * @details [long description]
+ * @brief Return boolean, telling if motor is moving.
  *
  */
 bool stepper::is_moving()
@@ -58,8 +59,10 @@ bool stepper::is_moving()
 
 
 /**
- * @brief [brief description]
- * @details [long description]
+ * @brief halt motor
+ * @details 
+ * Stops motor movement, by setting moving to false.
+ * Sets target position to current position.
  *
  */
 void stepper::halt()
@@ -72,9 +75,9 @@ void stepper::halt()
 
 
 /**
- * @brief [brief description]
- * @details [long description]
- *
+ * @brief Return current position
+ * @details 
+ * in a thread safe way, it seems.
  */
 uint32_t stepper::get_current_position()
 {
@@ -85,8 +88,9 @@ uint32_t stepper::get_current_position()
 
 
 /**
- * @brief [brief description]
- * @details [long description]
+ * @brief Set the current position to the passed value
+ * @details 
+ * Additionally sets the target value to the current position.
  *
  */
 void stepper::set_current_position(const uint32_t& target) {
@@ -98,9 +102,9 @@ void stepper::set_current_position(const uint32_t& target) {
 
 
 /**
- * @brief [brief description]
- * @details [long description]
- *
+ * @brief return the current speed
+ * @details 
+ * The larger this one is, the slower it is.
  */
 uint16_t stepper::get_speed()
 {
@@ -110,8 +114,9 @@ uint16_t stepper::get_speed()
 
 
 /**
- * @brief [brief description]
- * @details [long description]
+ * @brief set current speed
+ * @details 
+ * Sets the speed divider. 
  *
  */
 void stepper::set_speed(const uint16_t& target)
@@ -136,9 +141,22 @@ uint32_t stepper::get_target_position()
 
 
 /**
- * @brief [brief description]
- * @details [long description]
- *
+ * @brief set target the motor should move to
+ * @details 
+ * If one of the acceleration profiles is configured, members of m_position are calculated.
+ * 
+ * If only a small distance needs to be travelled, members are not calculated and min velocity is used (see tick()).
+ * 
+ * For Linear, the motor accelerates till reaching 1/2 distance, then decelerates.
+ * For Trapezoid, an easein and easout relative position are calculated. Between these max velocity is used.
+ * For Smooth, see tick() and the utility called there.
+ * 
+ * Calculations depend on 
+ *  - ACCEL_MIN_STEPS, distance that needs to be travelled, to enable velocity profiles (both profiles)
+ *  - ACCEL_DURATION, number of steps, over which the velocity increases/decreases. (Trapezoid only)
+ *    If distance to travel is < 2*ACCEL_DURATION, Trapezoid is equivalent to Linear.
+ * 
+ * @see m_position
  */
 void stepper::set_target_position(const uint32_t& target) {
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
@@ -176,9 +194,24 @@ void stepper::set_target_position(const uint32_t& target) {
 
 
 /**
- * @brief [brief description]
- * @details [long description]
- *
+ * @brief advance the motor one step, if appropriate
+ * @details 
+ * This method is called from the Interrupt Service Routine (ISR) for timer0, 
+ * 
+ * if the motor is moving, it issues a single step to the stepper motor driver, by delegating to derived classes.
+ * This is either "clockwise" (cw, up) or "counter clockwise" (ccw, down), depending on the 
+ * target position. 
+ * 
+ * The velocity of the movement is determined by the frequency with which the step routine is called.
+ * The frequency is determined by 
+ *  - m_set_speed, which is calculated from the chosen velocity profile (see config.h, in set_target_position())
+ *  - m_speed, the speed that is set from the moonlite controller (on computer) or any keyboard/ui that is configured.
+ * 
+ * Two cascading counters are used, to determine the frequency with which steps are issued:
+ *  - m_ovf_counter, this needs to overflow TIMER0_FREQ/(2*m_set_speed)
+ *  - counter, which introduces a delay by needing to be 0 mod (m_speed/2). 
+ * 
+ * Note: The timer0 interrupt is configured in main (ardufocus.cpp), isr can be found in isr.h/isr.cpp
  */
 void stepper::tick()
 {
@@ -212,9 +245,11 @@ void stepper::tick()
 
 #ifdef HAS_ACCELERATION
   /**
-   * @brief [brief description]
-   * @details [long description]
-   *
+   * @brief Determine the frequency with which steps are issued to the stepper motor driver.
+   * @details 
+   * Depending on the selected acceleration profile, set the current speed for the motor (m_set_speed).
+   * If only an amount < ACCELL_MIN_STEPS needs to be moved, no acceleration profile is applied and m_min_speed is used.
+   * If 
    */
   void stepper::update_freq()
   {

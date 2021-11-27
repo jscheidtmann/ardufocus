@@ -82,6 +82,9 @@ int main(void)
   // --------------------------------------------------------------------------
   // Timer0 ISR init routine --------------------------------------------------
   // --------------------------------------------------------------------------
+  // This timer determines frequency of steps sent to stepper motor drivers.
+  // Frequency is set in assert.h (default: 5kHz).
+
   // Cleanup all the relevant registers
   TCCR0A = 0; TCCR0B = 0; TIMSK0 = 0;
   TIFR0  = 0; TCNT0  = 0; OCR0A  = 0; OCR0B = 0;
@@ -102,6 +105,8 @@ int main(void)
   // --------------------------------------------------------------------------
   // Timer2 ISR init routine --------------------------------------------------
   // --------------------------------------------------------------------------
+  // Frequency is set in assert.h (default: 160 Hz)
+  
   // Cleanup all the relevant registers
   TCCR2A = 0; TCCR2B = 0; TIMSK2 = 0;
   TIFR2  = 0; TCNT2  = 0; OCR2A  = 0; OCR2B = 0;

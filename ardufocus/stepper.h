@@ -33,30 +33,36 @@ class stepper
   public:
     struct position_t
     {
-      bool moving;      // When set to true it will start the movement
+      bool moving;      //< When set to true it will start the movement
 
-      uint32_t current, // Absolution position
-               target;  // Target value for the step counter
+      uint32_t current, //< Absolute position, motor is currently at.
+               target;  //< Target value, motor needs to travel to
 
       #ifdef HAS_ACCELERATION
-      uint32_t distance,  // Move distance
-               relative;  // Relative position
+      // These things are calculated in set_target_position():
+      uint32_t distance,  //< Move distance, that needs to be traveled to reach the destination
+               relative;  //< Position the motor already traveled (in this move)
 
-      uint32_t easein,    // Step where easein stops
-               easeout;   // Step where easeout starts
+      uint32_t easein,    //< Step where easein stops, i.e. acceleration stops at this relative position (where v = max is reached)
+               easeout;   //< Step where easeout starts, deceleration starts at this relative position (where v starts becoming smaller again)
       #endif
     };
 
   protected:
-    uint8_t m_mode;                  // Stepping mode (1/1, 1/2, ..)
-    volatile uint16_t m_speed;       // Stepping speed
-    volatile position_t m_position;  // Absolute motor position
-    volatile uint16_t m_ovf_counter; // Overflow counter
+    uint8_t m_mode;                  //< Stepping mode (1/1, 1/2, ..)
+    volatile uint16_t m_speed;       //< Stepping speed
+    volatile position_t m_position;  //< Absolute motor position
+    volatile uint16_t m_ovf_counter; //< Overflow counter (used with m_set_speed for acceleration profiles)
 
     bool m_sleep_when_idle;          // Disable power to the motor when idle
     bool m_invert_direction;         // Invert the direction of rotation
 
     uint16_t m_max_speed = DEFAULT_MAX_SPEED;
+    /** @brief calculated speed (according to velocity profile)
+     * @details 
+     * Ranges from m_min_speed to m_max_speed, is set in update_freq().
+     * Is used as a divider in tick() to determine the.
+     */
     uint16_t m_set_speed = DEFAULT_MAX_SPEED;
     uint16_t m_min_speed = DEFAULT_MIN_SPEED;
 
@@ -74,6 +80,7 @@ class stepper
     virtual void halt();
 
     virtual inline void sleep()                        { ; }
+
     virtual inline void set_full_step()                { ; }
     virtual inline void set_half_step()                { ; }
     virtual inline void set_quarter_step()             { ; }

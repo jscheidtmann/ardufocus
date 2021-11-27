@@ -22,7 +22,7 @@
 /**
  * @brief Timer0 interrupt handler
  * @details
- *
+ * Handle movement of motors.
  */
 ISR(TIMER0_COMPA_vect)
 {
@@ -98,7 +98,7 @@ ISR(TIMER0_COMPA_vect)
 /**
  * @brief Timer2 interrupt handler
  * @details
- *
+ * Handle analog in: Read Temperature and motor velocity.
  */
 ISR(TIMER2_COMPA_vect)
 {

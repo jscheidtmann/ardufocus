@@ -172,7 +172,7 @@
 // When acceleration control is active this setting controls the minimum
 // required number of steps on a movement for the algorithm to kick in. Any
 // movement with less steps than this will be done at minimum speed without
-// any acceleration control. The default value is 10 steps of left undefined.
+// any acceleration control. The default value is 10 steps if left undefined.
 //#define ACCEL_MIN_STEPS 10
 
 // ----------------------------------------------------------------------------
@@ -182,7 +182,7 @@
 // Moonlite protocol supports two differnt speed modes for controlling the focuser:
 // "Full step mode" and "half step mode". Here you can configure, which microstepping is 
 // considered a "full step". Allowed values are 1,2,4,8 for full steps, half steps, 
-// quarter steps or eighth steps respectively. Half mode is the next one.
+// quarter steps or eighth steps respectively. Half mode then is the next smaller resolution.
 // (Note: At the moment this is a global setting for all stepper motors and 
 // is not supported by the ULN2003 driver, for which it must be one)
 #define STEPPER_FULLSTEP_MICRORES 8
