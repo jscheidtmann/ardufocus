@@ -37,9 +37,12 @@ void Keybd::setup()
   #endif
 
   #ifndef UI_KAP_INVERT_BUTTON_LOGIC
-    // Activates the internal pullup resistor
+    // Activate the internal pullup resistors, as appropriate
     IO::write(UI_KAP_FWD_BUTTON_PIN, HIGH);
     IO::write(UI_KAP_BWD_BUTTON_PIN, HIGH);
+    #ifdef UI_KAP_HIGHSPEED_BUTTON_PIN
+      IO::write(UI_KAP_HIGHSPEED_BUTTON_PIN, HIGH);
+    #endif
     #ifdef UI_KAP_SWT_BUTTON_PIN
       IO::write(UI_KAP_SWT_BUTTON_PIN, HIGH);
     #endif
@@ -53,6 +56,11 @@ void Keybd::setup()
   #ifdef UI_KAP_BWD_BUTTON_LED_PIN
     IO::set_as_output(UI_KAP_BWD_BUTTON_LED_PIN);
     IO::write(UI_KAP_BWD_BUTTON_LED_PIN, LOW);
+  #endif
+
+  #ifdef UI_KAP_HIGHSPEED_BUTTON_LED_PIN
+    IO::set_as_output(UI_KAP_HIGHSPEED_BUTTON_LED_PIN);
+    IO::write(UI_KAP_HIGHSPEED_BUTTON_LED_PIN, LOW);
   #endif
 
   #ifdef UI_KAP_SWT_BUTTON_LED_PIN
@@ -80,8 +88,8 @@ void Keybd::tick()
     #endif
   #endif
 
-  static uint8_t counter[3] = { 0 };
-  static bool previous_state[3] = { false };
+  static uint8_t counter[4] = { 0 };
+  static bool previous_state[4] = { false };
 
   // Debounce routine
   bool button_fwd_trigger = false;
@@ -89,6 +97,12 @@ void Keybd::tick()
 
   bool button_bwd_trigger = false;
   debounce(button_bwd_state, previous_state[1], button_bwd_trigger, counter[1], UI_KAP_BUTTON_DEBOUNCE);
+
+  #ifdef UI_KAP_2SPEEDS
+  bool button_highspeed_trigger = false;
+  // Note: [2] is used below by switch button.
+  debounce(button_highspeed_state, previous_state[3], button_highspeed_trigger, counter[3], UI_KAP_BUTTON_DEBOUNCE);
+  #endif
 
   // Visual feedback when the forward button is pressed
   #ifdef UI_KAP_FWD_BUTTON_LED_PIN
@@ -98,6 +112,10 @@ void Keybd::tick()
   // Visual feedback when the backward button is pressed
   #ifdef UI_KAP_BWD_BUTTON_LED_PIN
   IO::write(UI_KAP_BWD_BUTTON_LED_PIN, (button_bwd_state) ? HIGH : LOW);
+  #endif
+
+  #ifdef UI_KAP_HIGHSPEED_BUTTON_LED_PIN
+  IO::write(UI_KAP_HIGHSPEED_BUTTON_LED_PIN, (button_highspeed_state) ? HIGH : LOW);
   #endif
 
   static uint8_t old_motor_speed = 0;

@@ -255,6 +255,9 @@
 // previous buttons. The speed will be MAX_SPEED as defined above
 #define UI_KAP_HIGHSPEED_BUTTON_PIN  5
 
+// Define a LED for the highspeed button
+#define UI_KAP_HIGHSPEED_BUTTON_LED_PIN 2
+
 // Normally, when the high speed button is not pressed, this divider is applied 
 // to the MAX_SPEED. Useful values are 2 to 64. Do NOT use less than two (it's divided by 2)!
 #define UI_KAP_SPEED_DIVIDER 24
