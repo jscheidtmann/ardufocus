@@ -26,3 +26,13 @@ Ardufocus PCB schematics are licensed under [CC BY-NC-SA 4.0](https://creativeco
 ### For documentation, tutorials and howto visit [ardufocus.com](https://ardufocus.com).
 
 ----
+
+# Example configuration: One Motor, 3 buttons, 3 LEDs
+
+The configuration contained in this branch consists of:
+ * An A4988 step stick driving a NEMA17 motor, which is directly connected to the focus axle of a INED70 telescope. It is therefore using microstepping
+ * Three button switches for controlling the focuser manually
+    * One forward, one backward button
+    * One button to switch between two speeds.
+ * Three LEDs giving feedback, which button was pressed.
+
